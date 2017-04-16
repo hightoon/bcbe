@@ -594,12 +594,13 @@ def adduser():
                         'super', name, phone) # hack with super user
     return redirect('/usrmng/users')
 
-@app.route("/usrmng/del/<cardno>", methods=["GET"])
-def del_bin_user(cardno):
+@app.route("/usrmng/del/<cid>", methods=["GET"])
+def del_bin_user(cid):
     if 'user' not in session:
         return redirect('/login')
     op = userdb.DbOperation()
-    op.del_bin_user_by_cardno(cardno)
+    #op.del_bin_user_by_cardno(cardno)
+    op.del_bin_user_by_id(cid)
     return redirect('/usrmng/users')
 
 @app.route("/bin/use/report/<cardno>")
