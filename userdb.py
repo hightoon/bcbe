@@ -677,15 +677,18 @@ def get_geo_tree(user='dipuadmin'):
     print checked
     towns = op.get_towns()
     for town in towns:
-        twnode = {"text": town.townname, "id": 'twn-'+town.towncode}
+        twnode = {"text": town.townname, "id": 'twn-'+town.towncode,
+            "icon": "fa fa-street-view fa-large"}
         ch_couns = op.get_countries_by_townid(town.cid)
         town_children = []
         for coun in ch_couns:
-            cnnode = {"text": coun.counname, "id": 'cn-'+coun.councode}
+            cnnode = {"text": coun.counname, "id": 'cn-'+coun.councode,
+                "icon": "fa fa-home fa-large"}
             ch_terms = op.get_terminals_by_country_id(coun.cid)
             coun_children = []
             for term in ch_terms:
-                tmnode = {"text": term.termname+term.termcode, "id": term.ipaddr, "state": {}}
+                tmnode = {"text": term.termname+term.termcode, "id": term.ipaddr,
+                    "icon": "fa fa-tree fa-large", "state": {}}
                 if term.ipaddr in checked.split(';'):
                     tmnode['state']['checked'] = True
                 coun_children.append(tmnode)

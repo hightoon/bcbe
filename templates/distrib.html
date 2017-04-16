@@ -24,7 +24,7 @@
 {% endblock %}
 
 {% block tailscript %}
-
+<script src="https://use.fontawesome.com/e283c0d3c0.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 <script>
@@ -44,12 +44,18 @@
         plugins: ['checkbox']
         })
         .on("check_node.jstree uncheck_node.jstree", function(e, data) {
-            if (!data.node.state.checked && data.node.children.length) {
-                for (var n of data.node.children_d) {
-                    console.log(n);
-                    data.selected.splice(data.selected.indexOf(n), 1);
+            //unckeck
+            if (!data.node.state.checked) {
+                if (data.node.children.length) {
+                    for (var n of data.node.children_d) {
+                        data.selected.splice(data.selected.indexOf(n), 1);
+                    }
+                } else {
+                    // single node, automatically unchecked
                 }
             }
+
+            //check
             if (data.node.state.checked && data.node.children.length) {
                 if (data.node.children.length === data.node.children_d.length) {
                     // last parent
@@ -73,7 +79,6 @@
                     data.selected.splice(data.selected.indexOf(data.node.id), 1);
                 }
             }
-            console.log(data);
             selected = data.selected;
             //jQuery_2_1_1.jstree.plugins.checkbox();
         });
