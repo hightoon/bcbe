@@ -6,6 +6,7 @@
 
 import copy
 import sqlalchemy
+import leveldb
 
 from sqlalchemy import (
     Column,
@@ -668,9 +669,12 @@ def add_terminals():
         op.add_terminal(n, c, ci, ip)
     print 'add terminals done'
 
-def get_geo_tree():
+def get_geo_tree(user='dipuadmin'):
     tree = []
     op = DbOperation()
+    ldb = leveldb.LevelDB('./distsdb')
+    checked = ldb.Get(user)
+    print checked
     towns = op.get_towns()
     for town in towns:
         twnode = {"text": town.townname, "id": 'twn-'+town.towncode}
@@ -681,7 +685,9 @@ def get_geo_tree():
             ch_terms = op.get_terminals_by_country_id(coun.cid)
             coun_children = []
             for term in ch_terms:
-                tmnode = {"text": term.termname+term.termcode, "id": term.ipaddr}
+                tmnode = {"text": term.termname+term.termcode, "id": term.ipaddr, "state": {}}
+                if term.ipaddr in checked:
+                    tmnode['state']['checked'] = True
                 coun_children.append(tmnode)
             cnnode['children'] = coun_children
             town_children.append(cnnode)
