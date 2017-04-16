@@ -686,7 +686,7 @@ def get_geo_tree(user='dipuadmin'):
             coun_children = []
             for term in ch_terms:
                 tmnode = {"text": term.termname+term.termcode, "id": term.ipaddr, "state": {}}
-                if term.ipaddr in checked:
+                if term.ipaddr in checked.split(';'):
                     tmnode['state']['checked'] = True
                 coun_children.append(tmnode)
             cnnode['children'] = coun_children
