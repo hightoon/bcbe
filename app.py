@@ -21,10 +21,6 @@ from flask.sessions import SessionInterface
 from beaker.middleware import SessionMiddleware
 from werkzeug.utils import secure_filename
 
-from courses import (
-    get_courses,
-    )
-
 
 session_opts = {
     #'session.type': 'ext:memcached',
