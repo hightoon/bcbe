@@ -448,6 +448,17 @@ class DbOperation():
         else:
             return False
 
+    def update_bin_user_by_id(self, cid, name='', phone='', cardno='88888888'):
+        u = self.get_bin_user_by_id(cid)
+        if u:
+            u.name = name
+            u.phone = phone
+            u.cardno = cardno
+            self.session.commit()
+            return True
+        else:
+            return False
+
     def get(self, username):
         return self.session.query(Employee).filter(Employee.username==username).first()
 

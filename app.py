@@ -603,6 +603,20 @@ def del_bin_user(cid):
     op.del_bin_user_by_id(cid)
     return redirect('/usrmng/users')
 
+@app.route("/usrmng/edit", methods=["GET"])
+def usredit():
+    name = request.args.get('name')
+    cid = request.args.get('cid')
+    phone = request.args.get('phone')
+    cardno = request.args.get('cardno')
+    print name, cid, phone, cardno
+    op = userdb.DbOperation()
+    ret = op.update_bin_user_by_id(cid, name, phone, cardno)
+    if ret:
+        return 'ok'
+    else:
+        return 'nok'
+
 @app.route("/bin/use/report/<cardno>")
 def bin_report(cardno):
     print 'use report ', cardno

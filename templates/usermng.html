@@ -108,13 +108,16 @@
                         <td>{{user.country}}</td>
                         <td>{{user.devno}}</td>
                         <td>{{user.seqno}}</td>
-                        <td>{{user.name}}</td>
-                        <td>{{user.phone}}</td>
-                        <td>{{user.cardno}}</td>
+                        <td><input type="text" name=username-{{user.cid}} id=username-{{user.cid}} value={{user.name}}></input></td>
+                        <td><input type="text" name=userphone-{{user.cid}} id=userphone-{{user.cid}} value={{user.phone}}></input></td>
+                        <td><input type="text" name=usercard-{{user.cid}} id=usercard-{{user.cid}} value={{user.cardno}}></input></td>
                         <td>{{user.count}}</td>
                         <td>
                             <ul class="navbar-icons">
                                 <li>
+                                    <a class="tip" title="提交修改" onclick="submit_change({{user.cid}});alert('已提交');">
+                                        <i class="icon-edit"></i>
+                                    </a>
                                     <a href="/usrmng/del/{{user.cid}}" class="tip" title="删除">
                                         <i class="icon-remove"></i>
                                     </a>
@@ -144,7 +147,18 @@
 
 {% block tailscript %}
 
+<script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
 <script>
+    function submit_change(cid) {
+        $.get("/usrmng/edit",
+            {"cid": cid, "name": $('#username-'+cid).val(),
+             "phone": $('#userphone-'+cid).val(),
+             "cardno": $('#usercard-'+cid).val()});
+    }
+
+    $(document).ready(function() {
+        $('#image-table').DataTable();
+    } );
     //untoggleSidebarItems();
     $('#cardno-input').focus();
 </script>
