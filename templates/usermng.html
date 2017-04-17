@@ -115,7 +115,7 @@
                         <td>
                             <ul class="navbar-icons">
                                 <li>
-                                    <a class="tip" title="提交修改" onclick="submit_change({{user.cid}});alert('已提交');">
+                                    <a class="tip" title="提交修改" onclick="submit_change({{user.cid}});">
                                         <i class="icon-edit"></i>
                                     </a>
                                     <a href="/usrmng/del/{{user.cid}}" class="tip" title="删除">
@@ -153,7 +153,14 @@
         $.get("/usrmng/edit",
             {"cid": cid, "name": $('#username-'+cid).val(),
              "phone": $('#userphone-'+cid).val(),
-             "cardno": $('#usercard-'+cid).val()});
+             "cardno": $('#usercard-'+cid).val()})
+         .done(function(data) {
+             if (data === 'ok') {
+                 alert('已提交')
+             } else {
+                 alert('提交失败!');
+             }
+         });
     }
 
     $(document).ready(function() {

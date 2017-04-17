@@ -609,7 +609,7 @@ def usredit():
     cid = request.args.get('cid')
     phone = request.args.get('phone')
     cardno = request.args.get('cardno')
-    print name, cid, phone, cardno
+    #print name, cid, phone, cardno
     op = userdb.DbOperation()
     ret = op.update_bin_user_by_id(cid, name, phone, cardno)
     if ret:
