@@ -58,7 +58,7 @@ def set_ad_video_in_session():
     op = userdb.DbOperation()
     user = op.get(session['user'])
     folder = os.path.join(USER_FOLDER, session['user'], 'advds')
-    print folder
+    #print folder
     allvideo = os.listdir(folder)
     videoinfo = []
     for v in allvideo:
@@ -82,18 +82,21 @@ def login():
         usr = request.form['regular']
         pas = request.form['pass']
         if 'checkbox1' in request.form:
-            print request.form['checkbox1']
+            pass
+            #print request.form['checkbox1']
         else:
-            print 'not checked'
+            #print 'not checked'
+            pass
         op = userdb.DbOperation()
         if op.verify(usr, pas):
             if 'user' not in session:
                 session['user'] = usr
             else:
                 if session['user'] == usr:
-                    print 'stored session: {}'.format(session['user'])
+                    pass
+                    #print 'stored session: {}'.format(session['user'])
                 else:
-                    print 'another user use this session'
+                    #print 'another user use this session'
                     session['user'] = usr
             upath = os.path.join(USER_FOLDER, usr)
             if not os.path.exists(upath):
@@ -139,6 +142,7 @@ def vedio():
             abspath = os.path.abspath(videopath)
             #print abspath
             publisher.publish('advds&&%s'%(abspath), session['user'])
+            #print session['user']
             op.add_video(filename, videofile.filename, user.username, datetime.now())
             #print filename
     folder = os.path.join(USER_FOLDER, user.username, 'advds')
@@ -167,7 +171,8 @@ def del_video(idx):
         os.remove(fp)
         op.del_video_by_rowid(idx)
     else:
-        print fp, 'not existing'
+        pass
+        #print fp, 'not existing'
     #allvideo = os.listdir(folder)
     allvideo = op.get_video_by_user(user.username)
     videoinfo = []
@@ -239,7 +244,8 @@ def del_info(idx):
             os.remove(qrpath)
         op.del_info_item_by_rowid(idx)
     else:
-        print 'deleting info pic not existing.'
+        pass
+        #print 'deleting info pic not existing.'
 
     return redirect('/infosrv/pics')
 
@@ -300,7 +306,8 @@ def del_commpic(idx):
     if os.path.isfile(picpath):
         os.remove(picpath)
     else:
-        print 'deleting commpic not existing.'
+        pass
+        #print 'deleting commpic not existing.'
     op.del_comm_pic_by_rowid(idx)
     return redirect('/commsrv/mypics')
 
@@ -357,7 +364,8 @@ def mudel(idx):
     if os.path.isfile(picpath):
         os.remove(picpath)
     else:
-        print 'deleting commpic not existing.'
+        pass
+        #print 'deleting commpic not existing.'
     op.del_museum_pic_by_rowid(idx)
     return redirect('/commsrv/museum')
 
@@ -423,7 +431,8 @@ def del_dancing(idx):
         os.remove(fp)
         op.del_dancing_video_by_rowid(idx)
     else:
-        print fp, 'not existing'
+        pass
+        #print fp, 'not existing'
     return redirect('/commsrv/dancing')
     '''
     allvideo = op.get_dancing_video_by_user(user.username)
@@ -494,7 +503,8 @@ def delgov(idx):
         if os.path.isfile(txtpath):
             os.remove(txtpath)
     else:
-        print 'deleting breaking not existing.'
+        pass
+        #print 'deleting breaking not existing.'
     op.del_breaking_pic_by_rowid(idx)
     return redirect('/opengov/breaking')
 
@@ -556,7 +566,8 @@ def delconv(idx):
         if os.path.isfile(txtpath):
             os.remove(txtpath)
     else:
-        print 'deleting convinient not existing.'
+        pass
+        #print 'deleting convinient not existing.'
     op.del_convinient_pic_by_rowid(idx)
     return redirect('/opengov/convinient')
 
@@ -619,7 +630,7 @@ def usredit():
 
 @app.route("/bin/use/report/<cardno>")
 def bin_report(cardno):
-    print 'use report ', cardno
+    #print 'use report ', cardno
     op = userdb.DbOperation()
     op.update_bin_user_count(cardno)
     return 'ok'
@@ -627,20 +638,20 @@ def bin_report(cardno):
 @app.route("/user-query", methods=["POST"])
 def query():
     cardno = request.form['cardno']
-    print cardno
+    #print cardno
     op = userdb.DbOperation()
     usr = op.get_bin_user_by_cardno(cardno)
     rank = op.get_bin_user_rank(cardno)
     result = {'name': usr.name, 'mobile': usr.phone, 'rank': rank, 'count': usr.count}
     js = json.dumps(result)
-    print js
+    #print js
     resp = Response(js, status=200, mimetype='application/json')
     resp.headers['Link'] = 'http://localhost:5000'
     return resp
 
 @app.route("/user-query/<card>")
 def user_query(card):
-    print card
+    #print card
     return {'rank': 1, 'mobile': '88888888888', 'name': 'haitong'}
 
 @app.route("/distribution")
@@ -655,7 +666,7 @@ def terms():
         return redirect('/login')
     op = userdb.DbOperation()
     terms = op.get_geoinfo()
-    print terms
+    #print terms
     return render_template('terminals.html',
         terminals=terms, usersname=session['user'],
         towns=op.get_towns())
@@ -692,7 +703,7 @@ def get_counts():
     for c in couns:
         jscouns.append({'cn': c.counname, 'cc': c.councode, 'ti': c.townid, 'cid': c.cid})
     jsres = json.dumps({'data': jscouns})
-    print jsres
+    #print jsres
     resp = Response(jsres, status=200, mimetype='application/json')
     resp.headers['Link'] = 'http://localhost:5000'
     return resp
@@ -706,7 +717,7 @@ def get_terms():
     for t in terminals:
         jsterms.append({'tn': t.termname, 'tc': t.termcode, 'ci': t.counid, 'cid': t.cid, 'ip': t.ipaddr})
     jsres = json.dumps({'data': jsterms})
-    print jsres
+    #print jsres
     resp = Response(jsres, status=200, mimetype='application/json')
     resp.headers['Link'] = 'http://localhost:5000'
     return resp
@@ -739,7 +750,7 @@ def set_selected():
     return 'ok'
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
-    #from gevent.wsgi import WSGIServer
-    #http_server = WSGIServer(('0.0.0.0', 5000), app)
-    #http_server.serve_forever()
+    #app.run(host='0.0.0.0', debug=True)
+    from gevent.wsgi import WSGIServer
+    http_server = WSGIServer(('0.0.0.0', 5000), app)
+    http_server.serve_forever()
