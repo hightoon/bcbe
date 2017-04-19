@@ -20,7 +20,7 @@ def publish(message, exchange):
     ldb = leveldb.LevelDB('./distsdb')
     selected = ldb.Get(exchange)
     body = '&&'.join([message, selected])
-    print body
+    #print body
     channel.basic_publish(exchange=exchange,
                           routing_key='',
                           body=body)
