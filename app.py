@@ -143,6 +143,7 @@ def vedio():
             #print abspath
             publisher.publish('advds&&%s'%(abspath), session['user'])
             #print session['user']
+            print 'add video', user.username
             op.add_video(filename, videofile.filename, user.username, datetime.now())
             #print filename
     folder = os.path.join(USER_FOLDER, user.username, 'advds')
@@ -595,14 +596,17 @@ def adduser():
     devno = request.form['devno']
     if devno:
         devno = devno.split(';')[1].strip()
-    seqno = request.form['seqno']
-    #print name, phone, cardno
+    seqno = int(request.form['seqno'])
+    print town, coun, devno, seqno
     if not town or not coun or not devno:
         return '<h2>必须输入乡镇，行政村和位点信息!</h2>'
     op = userdb.DbOperation()
     if not op.update_bin_user_basic_info(town, coun, devno, seqno, name, phone, cardno):
+        print 'user not found:', name
         op.add_bin_user(cardno, town, coun, devno, seqno,
                         'super', name, phone) # hack with super user
+    else:
+        print 'user existing: ', name
     return redirect('/usrmng/users')
 
 @app.route("/usrmng/del/<cid>", methods=["GET"])

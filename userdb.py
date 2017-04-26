@@ -403,9 +403,9 @@ class DbOperation():
 
     def get_bin_user_by_geoinfo(self, town, country, dev, seq):
         return self.session.query(User).filter(User.town==town
-            and User.country==country
-            and User.devno==devno
-            and User.seqno==seq).first()
+            , User.country==country
+            , User.devno==dev
+            , User.seqno==seq).first()
 
     def get_bin_user_rank(self, cardno):
         users = self.session.query(User).order_by(desc(User.count))
@@ -719,7 +719,7 @@ class TestEmployee(unittest.TestCase):
 
     def test_add_video(self):
         op = DbOperation()
-        #op.add_video('mov_bbb', 'mov_bbb.mp4', 'dipuadmin', datetime.now())
+        op.add_video('', 'mov_ddd0.mp4', 'dipuadmin', datetime.now())
         video = op.get_video_by_user('dipuadmin')
         for f in video:
             print f.cid, f.filename
