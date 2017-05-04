@@ -141,11 +141,11 @@ def vedio():
             videofile.save(videopath)
             abspath = os.path.abspath(videopath)
             #print abspath
-            publisher.publish('advds&&%s'%(abspath), session['user'])
             #print session['user']
             print 'add video', user.username
             op.add_video(filename, videofile.filename, user.username, datetime.now())
             #print filename
+        publisher.publish('advds&&%s'%(abspath), session['user'])
     folder = os.path.join(USER_FOLDER, user.username, 'advds')
     #allvideo = os.listdir(folder)
     allvideo = op.get_video_by_user(user.username)
@@ -224,9 +224,9 @@ def info_add_pic():
                 txtfd.write(filename.encode('utf8'))
             op.add_info_item(filename, picfile.filename, qrname, txtfile, user.username, datetime.now())
             abspath = os.path.abspath(picpath)
-            publisher.publish('info&&%s'%(abspath), session['user'])
-            publisher.publish('info&&%s'%(qrpath), session['user'])
-            publisher.publish('info&&%s'%(txtpath), session['user'])
+        publisher.publish('info&&%s'%(abspath), session['user'])
+        publisher.publish('info&&%s'%(qrpath), session['user'])
+        publisher.publish('info&&%s'%(txtpath), session['user'])
     return redirect("/infosrv/pics")
 
 @app.route("/infosrv/del/<idx>")
@@ -291,8 +291,8 @@ def add_comm_pic():
             picfile.save(picpath)
             txtfile.save(txtpath)
             op.add_comm_pic(filename, picfile.filename, txtfile.filename, user.username, datetime.now())
-            publisher.publish('commpics&&%s'%(abspath,), session['user'])
-            publisher.publish('commpics&&%s'%(abstxtp,), session['user'])
+        publisher.publish('commpics&&%s'%(abspath,), session['user'])
+        publisher.publish('commpics&&%s'%(abstxtp,), session['user'])
     return redirect("/commsrv/mypics")
 
 @app.route("/commsrv/mypics/del/<idx>")
@@ -349,8 +349,8 @@ def muadd():
             picfile.save(picpath)
             txtfile.save(txtpath)
             op.add_museum_pic(filename, picfile.filename, txtfile.filename, user.username, datetime.now())
-            publisher.publish('commuseum&&%s'%(abspath,), session['user'])
-            publisher.publish('commuseum&&%s'%(abstxtp,), session['user'])
+        publisher.publish('commuseum&&%s'%(abspath,), session['user'])
+        publisher.publish('commuseum&&%s'%(abstxtp,), session['user'])
     return redirect("/commsrv/museum")
 
 @app.route("/commsrv/museum/del/<idx>")
@@ -403,7 +403,7 @@ def dancing_add():
             if not os.path.isfile(videopath):
                 videofile.save(videopath)
                 op.add_dancing_video(filename, videofile.filename, user.username, datetime.now())
-                publisher.publish('%s&&%s'%('commsqr', abspath,), session['user'])
+            publisher.publish('%s&&%s'%('commsqr', abspath,), session['user'])
                 #print filename
     return redirect('/commsrv/dancing')
     '''
@@ -484,8 +484,8 @@ def addgov():
             picfile.save(picpath)
             txtfile.save(txtpath)
             op.add_breaking_pic(filename, picfile.filename, txtfile.filename, user.username, datetime.now())
-            publisher.publish('%s&&%s'%(folder, abspath,), session['user'])
-            publisher.publish('%s&&%s'%(folder, txtabspath,), session['user'])
+        publisher.publish('%s&&%s'%(folder, abspath,), session['user'])
+        publisher.publish('%s&&%s'%(folder, txtabspath,), session['user'])
     return redirect("/opengov/breaking")
 
 @app.route("/opengov/breaking/del/<idx>")
@@ -547,8 +547,8 @@ def addconv():
             picfile.save(picpath)
             txtfile.save(txtpath)
             op.add_convinient_pic(filename, picfile.filename, txtfile.filename, user.username, datetime.now())
-            publisher.publish('%s&&%s'%(folder, abspath,), session['user'])
-            publisher.publish('%s&&%s'%(folder, txtabspath,), session['user'])
+        publisher.publish('%s&&%s'%(folder, abspath,), session['user'])
+        publisher.publish('%s&&%s'%(folder, txtabspath,), session['user'])
     return redirect("/opengov/convinient")
 
 @app.route("/opengov/convinient/del/<idx>")
