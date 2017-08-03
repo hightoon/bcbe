@@ -7,6 +7,7 @@
 import copy
 import sqlalchemy
 import leveldb
+import datetime
 
 from sqlalchemy import (
     Column,
@@ -176,6 +177,12 @@ class Terminal(Base):
     counid = Column(Integer)
     ipaddr = Column(String)
 
+class BinUse(Base):
+    __tablename__ = 'binuse'
+    cid = Column(Integer, primary_key=True, autoincrement=True)
+    cardno = Column(String)
+    bintype = Column(String)
+    time = Column(DateTime, default=func.now())
 
 class DbOperation():
     def __init__(self):
@@ -407,6 +414,9 @@ class DbOperation():
             , User.devno==dev
             , User.seqno==seq).first()
 
+    def get_bin_user_by_country(self, country):
+        return self.session.query(User).filter(User.country==country).all()
+
     def get_bin_user_rank(self, cardno):
         users = self.session.query(User).order_by(desc(User.count))
         for i, u in enumerate(users):
@@ -534,6 +544,22 @@ class DbOperation():
 
     def get_terminals_by_country_id(self, counid):
         return self.session.query(Terminal).filter(Terminal.counid==counid).all()
+
+    def add_bin_use(self, cardno):
+        bu = BinUse(cardno=cardno)
+        try:
+            self.session.add(bu)
+            self.session.commit()
+        except Exception as e:
+            print 'add bin use failed. {}'.format(e)
+
+    def get_total_bin_use(self, cardno, startdate, enddate):
+        '''
+            get total bin use number for the cardno between start and enddate
+        '''
+        return self.session.query(BinUse).filter(BinUse.cardno==cardno,
+            BinUse.time.between(startdate, enddate)).all()
+
 
 def create_all_users():
     users = [
@@ -748,6 +774,13 @@ class TestEmployee(unittest.TestCase):
     def test_get_geo_tree(self):
         print get_geo_tree()
 
+    def test_add_bin_use(self):
+        op = DbOperation()
+        op.add_bin_use('9530178')
+
+    def test_get_all_bin_use(self):
+        op = DbOperation()
+        print 'total bin use:', len(op.get_total_bin_use('9530178', '2017-08-01', '2017-08-03'))
 
 if __name__ == '__main__':
     #create_all_users()

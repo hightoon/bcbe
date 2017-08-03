@@ -712,6 +712,47 @@ def get_counts():
     resp.headers['Link'] = 'http://localhost:5000'
     return resp
 
+@app.route("/q/ranking/countries")
+def get_counts_ranking():
+    print request.args.get('towninfo')
+    towns = request.args.get('towninfo').split('|')
+    jscouns = []
+    for town in towns:
+        townid = int(town.split(';')[0])
+        op = userdb.DbOperation()
+        couns = op.get_countries_by_townid(townid)
+        for c in couns:
+            jscouns.append({'cn': c.counname, 'cc': c.councode, 'ti': c.townid, 'cid': c.cid})
+    jsres = json.dumps({'data': jscouns})
+    #print jsres
+    resp = Response(jsres, status=200, mimetype='application/json')
+    resp.headers['Link'] = 'http://localhost:5000'
+    return resp
+
+@app.route("/q/ranking/users", methods=['GET', 'POST'])
+def user_ranking():
+    countries = request.form.getlist('countryname')
+    start = request.form.get('startdate')
+    end = request.form.get('enddate')
+    users = []
+    op = userdb.DbOperation()
+    for coun in countries:
+        coun_code = coun.split(';')[1]
+        print coun_code
+        coun_users = op.get_bin_user_by_country(coun_code)
+        for coun_user in coun_users:
+            total = op.get_total_bin_use(coun_user.cardno, start, end)
+            users.append({
+                'town': coun_user.town,
+                'country': coun_user.country,
+                'uname': coun_user.name, 'uphone': coun_user.phone,
+                'cardno': coun_user.cardno, 'count': len(total)})
+    #jsres = json.dumps({'data': users})
+    #resp = Response(jsres, status=200, mimetype='application/json')
+    #resp.headers['Link'] = 'http://localhost:5000'
+    print users
+    return render_template("ranking.html", towns=op.get_towns(), users=users)
+
 @app.route("/q/terminals")
 def get_terms():
     cid = int(request.args.get('countryinfo').split(';')[-1])
@@ -752,6 +793,13 @@ def set_selected():
     ldb = leveldb.LevelDB('./distsdb')
     ldb.Put(session['user'], hosts)
     return 'ok'
+
+@app.route("/userbin/ranking")
+def ranking():
+    if 'user' not in session:
+        return redirect('/login')
+    op = userdb.DbOperation()
+    return render_template("ranking.html", towns=op.get_towns())
 
 if __name__ == "__main__":
     #app.run(host='0.0.0.0', debug=True)

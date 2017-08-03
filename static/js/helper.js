@@ -95,6 +95,25 @@ function getCountries() {
      });
 }
 
+function getCountriesForMulti() {
+    var e = document.getElementById("townname");
+    var towns = [], opt;
+    for (var i = 0; i < e.options.length; i++) {
+        opt = e.options[i];
+        if (opt.selected) towns.push(opt.value)
+    }
+    $("#countryname").empty();
+    $.get( "/q/ranking/countries", { towninfo: towns.join('|') } )
+     .done(function( data ) {
+        for (var i = 0; i < data.data.length; i++) {
+            var d = data.data[i];
+            $("#countryname").append($('<option>',
+                {value: d.cn + ';' + d.cc + ';' + d.ti + ';' + d.cid,
+                 text: d.cn}));
+        }
+     });
+}
+
 function getTerminals() {
     var e = document.getElementById("countryname");
     var cn = e.options[e.selectedIndex].value;
@@ -118,4 +137,26 @@ function getGeoTree(cb) {
     .done( function( data ) {
         cb(data);
     });
+}
+
+function submitRankingQuery() {
+    var e = document.getElementById("countryname");
+    var start = document.getElementById("startdate");
+    var end = document.getElementById("enddate");
+    var countries = [], opt;
+    for (var i = 0; i < e.options.length; i++) {
+        opt = e.options[i];
+        if (opt.selected) countries.push(opt.value);
+    }
+    $.get( "/q/ranking/users", { countryinfo: countries.join('|'), startdate: start.value, enddate: end.value })
+     .done(function( data ) {
+        for (var i=0; i < data.data.length; i++) {
+            var row = '<tr>' + '<td>' + data.data[i].town + '</td>' + '<td>' +
+                data.data[i].country + '</td>' + '<td>' + data.data[i].uname +
+                '</td>' + '<td>' + data.data[i].uphone + '</td>' + '<td>' +
+                data.data[i].cardno + '</td>' + '<td>' + data.data[i].count +
+                '</td>' + '</tr>';
+            $('#image-table tbody').append(row);
+        }
+     });
 }
