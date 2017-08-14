@@ -636,7 +636,7 @@ def usredit():
 def bin_report(cardno):
     #print 'use report ', cardno
     op = userdb.DbOperation()
-    op.update_bin_user_count(cardno)
+    op.add_bin_use(cardno)   # only update binuse table
     return 'ok'
 
 @app.route("/user-query", methods=["POST"])
