@@ -606,7 +606,8 @@ def adduser():
         op.add_bin_user(cardno, town, coun, devno, seqno,
                         'super', name, phone) # hack with super user
     else:
-        print 'user existing: ', name
+        #print 'user existing: ', name
+        pass
     return redirect('/usrmng/users')
 
 @app.route("/usrmng/del/<cid>", methods=["GET"])
