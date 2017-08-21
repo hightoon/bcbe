@@ -646,8 +646,9 @@ def query():
     #print cardno
     op = userdb.DbOperation()
     usr = op.get_bin_user_by_cardno(cardno)
-    rank = op.get_bin_user_rank(cardno)
-    result = {'name': usr.name, 'mobile': usr.phone, 'rank': rank, 'count': usr.count}
+    #rank = op.get_bin_user_rank(cardno)
+    rank, count = op.get_bin_use_total_rank(cardno)
+    result = {'name': usr.name, 'mobile': usr.phone, 'rank': rank, 'count': count}
     js = json.dumps(result)
     #print js
     resp = Response(js, status=200, mimetype='application/json')

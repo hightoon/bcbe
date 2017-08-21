@@ -25,7 +25,7 @@ from sqlalchemy.orm import (
     sessionmaker
     )
 from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 Base = None
 engine = None
@@ -560,6 +560,28 @@ class DbOperation():
         return self.session.query(BinUse).filter(BinUse.cardno==cardno,
             BinUse.time.between(startdate, enddate)).all()
 
+    def get_bin_use_total_rank(self, cardno):
+        mend = date.today() + timedelta(days=1)
+        mstart = mend - timedelta(days=mend.day-1)
+        timefmt = '%Y-%m-%d'
+        startdate, enddate = mstart.strftime(timefmt), mend.strftime(timefmt)
+        alluse = self.session.query(BinUse).filter(
+            BinUse.time.between(startdate, enddate)).all()
+        print alluse
+        total = {}
+        for use in alluse:
+            total.setdefault(use.cardno, 0)
+            total[use.cardno] += 1
+        rank = 0
+        count = 0
+        print sorted(total.iteritems(), key=lambda (k,v): (v,k))
+        for key, value in sorted(total.iteritems(), key=lambda (k,v): (v,k)):
+            if key == cardno:
+                count = value
+                break
+            else:
+                rank += 1
+        return len(total) - rank, count
 
 def create_all_users():
     users = [
@@ -763,16 +785,17 @@ class TestEmployee(unittest.TestCase):
             print u.count
             self.assertTrue(u.count == 2)
 
-    def test_get_bin_user_rank(self):
-        op = DbOperation()
-        op.add_bin_user('michelle', '15555555555', '22222222', 'binjiang', 'puyan', 'dongguan', 'dipuadmin')
-        for i in range(5):
-            op.update_bin_user_count('22222222')
-        rank = op.get_bin_user_rank('22222222')
-        self.assertTrue(rank == 1)
+    #def test_get_bin_user_rank(self):
+    #    op = DbOperation()
+    #    op.add_bin_user('michelle', '15555555555', '22222222', 'binjiang', 'puyan', 'dongguan', 'dipuadmin')
+    #    for i in range(5):
+    #        op.update_bin_user_count('22222222')
+    #    rank = op.get_bin_user_rank('22222222')
+    #    self.assertTrue(rank == 1)
 
     def test_get_geo_tree(self):
-        print get_geo_tree()
+        #print get_geo_tree()
+        pass
 
     def test_add_bin_use(self):
         op = DbOperation()
@@ -780,7 +803,12 @@ class TestEmployee(unittest.TestCase):
 
     def test_get_all_bin_use(self):
         op = DbOperation()
-        print 'total bin use:', len(op.get_total_bin_use('9530178', '2017-08-01', '2017-08-03'))
+        print 'total bin use:', len(op.get_total_bin_use('9530178', '2017-08-01', '2017-08-21'))
+
+    def test_get_bin_use_total_rank(self):
+        op = DbOperation()
+        r, c = op.get_bin_use_total_rank('9530178')
+        print 'my rank: %d, with %d times'%(r, c)
 
 if __name__ == '__main__':
     #create_all_users()
