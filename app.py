@@ -757,8 +757,8 @@ def user_ranking():
     #print users
     with open('./static/binranking.csv', 'wb') as f:
         writer = csv.writer(f)
-        writer.writerow(['town', 'country', 'card NO', 'counter'])
-        writer.writerows([[u['town'], u['country'], u['cardno'], u['count']] for u in users])
+        writer.writerow(['town', 'country', 'card NO', 'name', 'phone', 'counter'])
+        writer.writerows([[u['town'], u['country'], u['cardno'], u['uname'], u['uphone'], u['count']] for u in users])
     return render_template("ranking.html", towns=op.get_towns(), users=users)
 
 @app.route("/q/terminals")
