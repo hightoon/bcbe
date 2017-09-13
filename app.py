@@ -152,6 +152,7 @@ def vedio():
     videoinfo = []
     for v in allvideo:
         name, ext = os.path.splitext(v.videoname)
+        if not os.path.isfile(os.path.join(folder, v.videoname)): continue
         size = os.path.getsize(os.path.join(folder, v.videoname)) / 1024
         videoinfo.append((v.cid, name, size, ext, user.area))
     #videoinfo = enumerate(videoinfo)
