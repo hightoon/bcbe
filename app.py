@@ -6,6 +6,7 @@ import json
 import leveldb
 import userdb
 import publisher
+import csv
 
 from flask import (
     Flask,
@@ -754,6 +755,10 @@ def user_ranking():
     #resp = Response(jsres, status=200, mimetype='application/json')
     #resp.headers['Link'] = 'http://localhost:5000'
     #print users
+    with open('./static/binranking.csv', 'wb') as f:
+        writer = csv.writer(f)
+        writer.writerow(['town', 'country', 'card NO', 'counter'])
+        writer.writerows([[u['town'], u['country'], u['cardno'], u['count']] for u in users])
     return render_template("ranking.html", towns=op.get_towns(), users=users)
 
 @app.route("/q/terminals")
